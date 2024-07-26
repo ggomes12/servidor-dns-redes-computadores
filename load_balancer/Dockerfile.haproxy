@@ -1,0 +1,11 @@
+FROM haproxy:latest
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y dnsutils iputils-ping
+
+COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+
+EXPOSE 80
+
