@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  dns-primary:
+    build:
+      context: ./dns
+    ports:
+      - "5313:53/udp"
+    networks:
+      - dnsnet
+
+  http-server1:
+    build:
+      context: ./http
+      dockerfile: Dockerfile.http
+    container_name: http-server1
+    ports:
+      - "8081:80"
+    networks:
+      - httpnet
+
+  http-server2:
+    build:
+      context: ./http
+      dockerfile: Dockerfile.http
+    container_name: http-server2
+    ports:
+      - "8082:80"
+    networks:
+      - httpnet
+      
+  http-server3:
+    build:
+      context: ./http
+      dockerfile: Dockerfile.http
+    container_name: http-server3
+    ports:
+      - "8083:80"
+    networks:
+      - httpnet
+
+  load-balancer:
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile.haproxy
+    container_name: load-balancer
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - httpnet
+
+networks:
+  dnsnet:
+    driver: bridge
+  httpnet:
+    driver: bridge
+
