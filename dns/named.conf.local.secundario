@@ -1,0 +1,13 @@
+// configurações da zona secundaria
+// O servidor DNS secundário obtém seus dados de zona do servidor primário, ou seja, atuando como o backup
+// eh definida como slave , ou seja, zona escrava
+// especifica o arquivo (file) que contém os registros DNS para a zona 
+// Define o servidor mestre (primário) para esta zona.
+// O servidor DNS primário, com o IP 172.20.0.2, é o autoritativo para a zona "primario.com" e é de onde o servidor secundário obtém seus dados.
+
+zone "primario.com" {
+    type slave;
+    file "/etc/bind/slave/db.primario.com";
+    masters { 172.20.0.2; }; 
+};
+

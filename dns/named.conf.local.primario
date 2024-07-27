@@ -1,0 +1,11 @@
+// configurações da zona primario.com
+// eh definida como master , ou seja, zona mestre
+// especifica o arquivo (file) que contém os registros DNS para a zona "primario.com"
+//Permite a transferência de zona para o servidor com o endereço IP 172.20.0.3, ou seja, o dns secundário
+
+zone "primario.com" {
+    type master;
+    file "/etc/bind/db.primario.com";
+    allow-transfer { 172.20.0.3; }; 
+};
+

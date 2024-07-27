@@ -1,7 +1,0 @@
-// Zona para o dns-primario
-zone "primario.com" {
-    type master;
-    file "/etc/bind/db.primario.com";
-
-};
-

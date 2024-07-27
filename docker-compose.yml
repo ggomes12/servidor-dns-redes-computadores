@@ -4,11 +4,31 @@ services:
   dns-primary:
     build:
       context: ./dns
+      dockerfile: Dockerfile
+    container_name: dns-primario
     ports:
       - "5313:53/udp"
+      - "5313:53/tcp"
     networks:
-      - dnsnet
-
+      dnsnet:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ./dns/named.conf.local.primario:/etc/bind/named.conf.local
+      
+  dns-secondary:
+    build:
+      context: ./dns
+      dockerfile: Dockerfile
+    container_name: dns-secundario
+    ports:
+      - "5314:53/udp"
+      - "5314:53/tcp"
+    networks:
+      dnsnet:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - ./dns/named.conf.local.secundario:/etc/bind/named.conf.local
+ 
   http-server1:
     build:
       context: ./http
@@ -53,6 +73,11 @@ services:
 networks:
   dnsnet:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
   httpnet:
     driver: bridge
 
+
+  
