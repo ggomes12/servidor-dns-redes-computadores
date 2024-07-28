@@ -1,4 +1,4 @@
-
+.
 <h1 style="text-align: center;">
   servidor-dns-redes-computadores
 </h1>
