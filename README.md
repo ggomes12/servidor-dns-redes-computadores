@@ -1,4 +1,3 @@
-.
 <h1 style="text-align: center;">
   servidor-dns-redes-computadores
 </h1>
@@ -7,7 +6,7 @@ O objetivo deste trabalho é desenvolver um sistema completo utilizando Docker q
 
 ## Descrição do Projeto
 
-O projeto inclue uma infraestrutura utilizando Docker atendendo os seguintes requisitos:
+O projeto inclue uma infraestrutura utilizando Docker atendendo os seguintes requisitos de estruturação:
 
 Serviço DNS
 
