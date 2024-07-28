@@ -1,9 +1,12 @@
-..
 <h1 style="text-align: center;">
   servidor-dns-redes-computadores
 </h1>
 
 O objetivo deste trabalho é desenvolver um sistema completo utilizando Docker que inclua um serviço de DNS (primário e secundário) e servidores HTTP com balanceamento de carga.
+
+
+![Estrutura HTTP](images/docker.png)
+![Estrutura HTTP](images/python.png)
 
 ## Descrição do Projeto
 
@@ -22,9 +25,6 @@ Serviço HTTP
 ## Estrutura do Projeto
 
 O projeto está organizado da seguinte forma:
-
-
-
 
 Diretório `dns`
 
@@ -49,8 +49,6 @@ Arquivo `docker-compose.yml`
 
     Define os serviços Docker e como eles interagem entre si.
 
-
-
 ## Pré-requisitos
 
     Docker instalado na máquina.
@@ -61,7 +59,7 @@ Arquivo `docker-compose.yml`
 1. **Clone o repositório do projeto:**
 
     ```bash
-    $ https://github.com/ggomes12/servidor-dns-redes-computadores.git
+    $ git clone https://github.com/ggomes12/servidor-dns-redes-computadores.git
     ```
 
 2. **Navegue para o diretório do projeto:**
@@ -70,57 +68,47 @@ Arquivo `docker-compose.yml`
     $ cd servidor-dns-redes-computadores
     ```
 
-3. **:**
+3. **Suba os containers:**
 
     ```bash
-    $ 
+    $ docker-compose up
     ```
 
-4. **:**
+4. **Verifique os logs:**
 
     - No Windows:
       ```bash
-      $ 
+      $ docker-compose logs
       ```
 
     - No MacOS/Linux:
       ```bash
-      $ 
+      $ docker-compose logs
       ```
 
-5. **:**
+5. **Acesse o sistema:**
 
     ```bash
-    $ 
+    $ curl http://localhost
     ```
 
-6. **:**
+6. **Testar o DNS:**
 
     ```bash
-    $ 
+    $ dig @localhost exemplo.com
     ```
 
-7. **:**
+7. **Verificar balanceamento de carga:**
 
     ```bash
-    $ 
+    $ curl http://localhost/balanceamento
     ```
-
-8. **:**
-
-    ```bash
-    $ 
-    ```
-
-
 
 ## Funcionalidades
 
-
 ## Conclusão
 
-Este projeto acadêmico demonstra a criação de uma infraestrutura de rede utilizando Docker, incluindo serviços de DNS primário e secundário, bem como servidores HTTP com balanceamento de carga. 
-Esta implementação é útil para entender na prática os conceitos de redes e a utilização de containers para gerenciamento de serviços.
+Este projeto acadêmico demonstra a criação de uma infraestrutura de rede utilizando Docker, incluindo serviços de DNS primário e secundário, bem como servidores HTTP com balanceamento de carga. Esta implementação é útil para entender na prática os conceitos de redes e a utilização de containers para gerenciamento de serviços.
 
 ## Autores
 
@@ -131,7 +119,3 @@ Esta implementação é útil para entender na prática os conceitos de redes e 
 ## Licença
 
 Este projeto é licenciado sob a Licença MIT - veja o arquivo LICENSE para mais detalhes.
-
----
-
-
