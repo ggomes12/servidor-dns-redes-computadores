@@ -431,10 +431,15 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     Os logs do load-balancer mostram a distribuição das requisições entre os servidores HTTP. No exemplo, você pode observar as seguintes entradas nos logs:
 
     http_front http_back/http_server1
+    
     http_front http_back/http_server2
+    
     http_front http_back/http_server3
+    
     http_front http_back/http_server1
+    
     http_front http_back/http_server2
+    
     http_front http_back/http_server3
 
     Essas entradas indicam que o load-balancer está distribuindo as requisições de forma sequencial entre os servidores HTTP, utilizando o método Round Robin. O log confirma que cada servidor (http-server1, http-server2, e http-server3) recebeu uma parte das requisições, como esperado. Este comportamento demonstra que o balanceamento de carga está funcionando corretamente, equilibrando as solicitações entre os servidores disponíveis.
