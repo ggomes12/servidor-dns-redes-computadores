@@ -472,8 +472,8 @@ Este projeto demonstra a eficácia do Docker para gerenciar e orquestrar serviç
 
 ## Autores
 
-    Crisly Maria
-    Erik Vinicius
+    Crisly Santos
+    Erik Lustosa
     Guilherme Gomes
 
 ## Licença
