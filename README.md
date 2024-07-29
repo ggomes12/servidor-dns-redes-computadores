@@ -177,7 +177,6 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     ```bash
     $ docker exec -it dns-primario /bin/bash
-
     ```
 
     <img src="images/imagem6.png">
@@ -189,9 +188,68 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     <img src="images/imagem7.png">
 
     Uma vez que o terminal bash no container esteja aberto, o comando dig pode ser utilizado para testar a resolução de nomes internamente.
+   
 
 
 3. **Resolução de nomes no secundário**
+
+    Explicação do que será testado:
+
+    Para garantir que o servidor DNS secundário está funcionando corretamente e pode resolver nomes de domínio do servidor DNS primário, realizamos uma consulta DNS diretamente no container do servidor DNS secundário.
+
+    Comando para acessar o container do servidor DNS secundário e realizar a consulta:
+
+    ```bash
+    $ docker exec -it dns-secundario /bin/bash
+    ```
+
+    <img src="images/imagem8.png">
+
+    
+    Explicação do que foi testado:
+
+    O comando docker exec -it dns-secundario /bin/bash permite acessar o terminal interativo do container do servidor DNS secundário. Dentro desse container, o comando dig @localhost primario.com é utilizado para testar a resolução de nomes, consultando o servidor DNS primário para verificar se o domínio primario.com é resolvido corretamente. Esse teste confirma que o servidor DNS secundário pode se comunicar com o primário e resolver nomes de domínio conforme esperado.
+
+
+
+4. **Verificando o servidor HTTP**
+
+    Explicação do que será testado:
+    
+    Para garantir que os servidores HTTP estão funcionando corretamente, acessamos cada container dos servidores HTTP (http-server1, http-server2 e http-server3) e utilizamos o comando curl para verificar o conteúdo servido por cada servidor.
+
+    Comandos para acessar os containers dos servidores HTTP e realizar a verificação:
+
+    Para o http-server1:
+    ```bash
+    $ docker exec -it http-server1 /bin/bash
+    ```
+    <img src="images/imagem9.png">
+
+    Para o http-server2:
+    ```bash
+    $ docker exec -it http-server2 /bin/bash
+    ```
+    <img src="images/imagem10.png">
+
+
+    Para o http-server3:
+    ```bash
+    $ docker exec -it http-server3 /bin/bash
+    ```
+    <img src="images/imagem11.png">
+
+
+
+
+    
+    Explicação do que foi testado:
+
+    Os comandos docker exec -it http-server1 /bin/bash, docker exec -it http-server2 /bin/bash e docker exec -it http-server3 /bin/bash permitem acessar os terminais interativos dos containers dos servidores HTTP1, HTTP2 e HTTP3, respectivamente. Dentro de cada container, o comando "curl http: // localhost" é utilizado para enviar uma solicitação HTTP ao próprio servidor. Isso retorna o conteúdo da página index.html, confirmando que cada servidor HTTP está configurado corretamente e está servindo o conteúdo esperado. Este teste é realizado no terminal Linux e verifica se a configuração de cada servidor HTTP está funcionando como esperado.
+
+
+    
+
 
 
 
