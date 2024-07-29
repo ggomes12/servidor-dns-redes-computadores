@@ -12,12 +12,12 @@ O objetivo deste trabalho é desenvolver um sistema completo utilizando Docker q
 
 O projeto inclue uma infraestrutura utilizando Docker atendendo os seguintes requisitos de estruturação:
 
-Serviço DNS
+**Serviço DNS**
 
     Servidor DNS Primário
     Servidor DNS Secundário
 
-Serviço HTTP
+**Serviço HTTP**
 
     Servidores HTTP
     Balanceamento de Carga
@@ -109,11 +109,11 @@ Arquivo `docker-compose.yml`
 
 1. **Buildando so containers**
    
-    Explicação do que será testado: 
+    **Explicação do que será testado:**
 
     Antes de iniciar os containers, é necessário construir as imagens Docker para cada um dos serviços definidos no arquivo docker-compose.yml. Este passo garante que todas as dependências e configurações estejam prontas para a execução dos containers.
 
-    Comando para buldar os container:
+    **Comando para buldar os container:**
 
     ```bash
     $ docker-compose build --no-cache
@@ -122,17 +122,17 @@ Arquivo `docker-compose.yml`
 
     <img src="images/foto01.png">
 
-    Explicação do que foi testado:
+    **Explicação do que foi testado:**
 
     O comando docker-compose build --no-cache lê o docker-compose.yml e, em seguida, constrói as imagens Docker conforme especificado nos respectivos Dockerfiles. Este comando prepara todas as imagens necessárias para serem executadas como containers, garantindo que todas as dependências sejam baixadas e configuradas corretamente sem utilizar cache.
 
 2. **Upando os containers**
 
-    Explicação do que será testado:
+    **Explicação do que será testado:**
 
     Após construir as imagens, o próximo passo é iniciar os containers. Este comando cria e inicia os containers conforme especificado no arquivo docker-compose.yml.
 
-    Comando para upar os container:
+    **Comando para upar os container:**
 
     ```bash
     $  docker-compose up -d
@@ -140,17 +140,17 @@ Arquivo `docker-compose.yml`
     <img src="images/image2.png">
 
 
-    Explicação do que foi testado:
+    **Explicação do que foi testado:**
 
     O comando docker-compose up -d inicia os containers em modo desacoplado (background). Isso permite que os serviços definidos no docker-compose.yml sejam executados como containers independentes. A saída do comando confirma a criação e o início dos containers, bem como a criação das redes necessárias.
 
 3. **Verificando os containers**
 
-    Explicação do que será testado:
+    **Explicação do que será testado:**
 
     Após iniciar os containers, é importante verificar se todos estão em execução conforme esperado. Este comando lista todos os containers em execução e seus respectivos estados.
 
-    Comando para verificar os container:
+    **Comando para verificar os container:**
 
     ```bash
     $ docker-compose ps
@@ -163,7 +163,7 @@ Arquivo `docker-compose.yml`
     <img src="images/imagem4.png">
     <img src="images/imagem5.png">
 
-    Explicação do que foi testado:
+    **Explicação do que foi testado:**
 
     O comando docker-compose ps lista todos os containers definidos no docker-compose.yml que estão em execução, juntamente com seus status, portas expostas e comandos de inicialização. Isso confirma que todos os serviços foram iniciados corretamente e estão prontos para uso.
 
@@ -193,7 +193,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
 3. **Resolução de nomes no secundário**
 
-    Explicação do que será testado:
+    **Explicação do que será testado:**
 
     Para garantir que o servidor DNS secundário está funcionando corretamente e pode resolver nomes de domínio do servidor DNS primário, realizamos uma consulta DNS diretamente no container do servidor DNS secundário.
 
@@ -206,7 +206,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     <img src="images/imagem8.png">
 
     
-    Explicação do que foi testado:
+    **Explicação do que foi testado:**
 
     O comando docker exec -it dns-secundario /bin/bash permite acessar o terminal interativo do container do servidor DNS secundário. Dentro desse container, o comando dig @localhost primario.com é utilizado para testar a resolução de nomes, consultando o servidor DNS primário para verificar se o domínio primario.com é resolvido corretamente. Esse teste confirma que o servidor DNS secundário pode se comunicar com o primário e resolver nomes de domínio conforme esperado.
 
@@ -214,36 +214,32 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
 4. **Verificando o servidor HTTP**
 
-    Explicação do que será testado:
+    **Explicação do que será testado:**
     
     Para garantir que os servidores HTTP estão funcionando corretamente, acessamos cada container dos servidores HTTP (http-server1, http-server2 e http-server3) e utilizamos o comando curl para verificar o conteúdo servido por cada servidor.
 
     Comandos para acessar os containers dos servidores HTTP e realizar a verificação:
 
-    Para o http-server1:
+    **Para o http-server1:**
     ```bash
     $ docker exec -it http-server1 /bin/bash
     ```
     <img src="images/imagem9.png">
 
-    Para o http-server2:
+    **Para o http-server2:**
     ```bash
     $ docker exec -it http-server2 /bin/bash
     ```
     <img src="images/imagem10.png">
 
 
-    Para o http-server3:
+    **Para o http-server3:**
     ```bash
     $ docker exec -it http-server3 /bin/bash
     ```
     <img src="images/imagem11.png">
 
-
-
-
-    
-    Explicação do que foi testado:
+    **Explicação do que foi testado:**
 
     Os comandos docker exec -it http-server1 /bin/bash, docker exec -it http-server2 /bin/bash e docker exec -it http-server3 /bin/bash permitem acessar os terminais interativos dos containers dos servidores HTTP1, HTTP2 e HTTP3, respectivamente. Dentro de cada container, o comando "curl http: // localhost" é utilizado para enviar uma solicitação HTTP ao próprio servidor. Isso retorna o conteúdo da página index.html, confirmando que cada servidor HTTP está configurado corretamente e está servindo o conteúdo esperado. Este teste é realizado no terminal Linux e verifica se a configuração de cada servidor HTTP está funcionando como esperado.
 
