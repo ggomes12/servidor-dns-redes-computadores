@@ -1,17 +1,6 @@
-# builda a imagem mais recente do serviço de balanceamente haproxy
 FROM haproxy:latest
 
-# Define o usuário root para executar os comandos à frente
-USER root
-
-
-# Atualiza a lista de pacotes do sistema e instala as ferramentas de rede (dnsutils(para o dig) e iputils(para o ping))
-RUN apt-get update && \
-    apt-get install -y dnsutils iputils-ping
-
-# Copia o arquivo de configuração do haproxy para o container
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
-# Expõe a porta 80
-EXPOSE 80
+EXPOSE 80 8080
 

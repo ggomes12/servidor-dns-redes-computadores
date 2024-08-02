@@ -1,63 +1,79 @@
 version: '3.8'
 
 services:
-  dns-primary:
+  dns-primario:
     build:
       context: ./dns
       dockerfile: Dockerfile
     container_name: dns-primario
     ports:
-      - "5313:53/udp"
-      - "5313:53/tcp"
+      - "7313:53/udp"
+      - "7313:53/tcp"
     networks:
       dnsnet:
         ipv4_address: 172.20.0.2
     volumes:
+      - ./dns/named.conf:/etc/bind/named.conf
       - ./dns/named.conf.local.primario:/etc/bind/named.conf.local
-      
-  dns-secondary:
+      - ./dns/named.conf.options:/etc/bind/named.conf.options
+      - ./dns/db.primario.com:/etc/bind/db.primario.com
+
+  dns-secundario:
     build:
       context: ./dns
       dockerfile: Dockerfile
     container_name: dns-secundario
     ports:
-      - "5314:53/udp"
-      - "5314:53/tcp"
+      - "7314:53/udp"
+      - "7314:53/tcp"
     networks:
       dnsnet:
         ipv4_address: 172.20.0.3
     volumes:
+      - ./dns/named.conf:/etc/bind/named.conf
       - ./dns/named.conf.local.secundario:/etc/bind/named.conf.local
- 
+      - ./dns/named.conf.options:/etc/bind/named.conf.options
+      - ./dns/db.primario.com:/etc/bind/db.secundario.com
+
   http-server1:
     build:
-      context: ./http
+      context: ./http1
       dockerfile: Dockerfile.http
     container_name: http-server1
     ports:
-      - "8081:80"
+      - "8190:80"
     networks:
-      - httpnet
+      httpnet:
+        ipv4_address: 172.18.0.2
+    dns:
+      - 172.20.0.2
 
   http-server2:
     build:
-      context: ./http
+      context: ./http2
       dockerfile: Dockerfile.http
     container_name: http-server2
     ports:
-      - "8082:80"
+      - "8191:80"
     networks:
-      - httpnet
-      
+      httpnet:
+        ipv4_address: 172.18.0.3
+    dns:
+      - 172.20.0.2
+
   http-server3:
     build:
-      context: ./http
+      context: ./http3
       dockerfile: Dockerfile.http
     container_name: http-server3
     ports:
-      - "8083:80"
+      - "8192:80"
     networks:
-      - httpnet
+      httpnet:
+        ipv4_address: 172.18.0.4
+    dns:
+      - 172.20.0.2
+
 
   load-balancer:
     build:
@@ -66,18 +82,27 @@ services:
     container_name: load-balancer
     ports:
       - "80:80"
-      - "8080:8080"
+      - "7722:8080"
     networks:
-      - httpnet
+      httpnet:
+        ipv4_address: 172.18.0.5
+    dns:
+      - 172.20.0.2
+    depends_on:
+      - http-server1
+      - http-server2
+      - http-server3
 
 networks:
   dnsnet:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/24
+        - subnet: "172.20.0.0/24"
+
   httpnet:
     driver: bridge
+    ipam:
+      config:
+        - subnet: "172.18.0.0/24"
 
-
-  

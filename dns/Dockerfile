@@ -2,7 +2,7 @@
 FROM ubuntu:latest
 
 # Atualiza os pacotes(apt update) e instala o bind9, utilitarios do dns , (netcat e ping para fins de teste) 
-RUN apt-get update && apt-get install -y bind9 bind9utils bind9-doc dnsutils netcat-openbsd iputils-ping
+RUN apt-get update && apt-get install -y bind9 bind9utils bind9-doc dnsutils netcat-openbsd iputils-ping curl
 
 # Copy -> Copia os arquivos de configuração para o conteiner
 
@@ -14,6 +14,8 @@ COPY named.conf.local.primario /etc/bind/named.conf.local
 COPY db.primario.com /etc/bind/db.primario.com
 #rndc controla a operação do servidor de nomes
 COPY rndc.key /etc/bind/rndc.key
+
+COPY named.conf.options /etc/bind/named.conf.options
 
 #dá permissão à pasta dentro do container
 RUN chown -R bind:bind /etc/bind 

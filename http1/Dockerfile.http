@@ -1,0 +1,19 @@
+# builda a imagem mais recente do servidor nginx
+FROM nginx:latest
+
+
+
+USER root
+
+
+RUN apt-get update && \
+    apt-get install -y dnsutils iputils-ping curl
+    
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY index.html /usr/share/nginx/html/index.html
+COPY resolv.conf /etc/resolv.conf
+
+
+EXPOSE 80
+
