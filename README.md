@@ -332,6 +332,73 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     O comando docker network ls lista todas as redes ativas no Docker, permitindo confirmar que as redes necessárias estão disponíveis e funcionando. Em seguida, o comando docker network inspect httpnet fornece detalhes específicos sobre a rede httpnet, incluindo todos os IPs dos containers HTTP conectados a essa rede. A visualização desta rede é crucial para testar o balanceamento de carga, pois mostra quais servidores HTTP estão disponíveis e conectados. As imagens mostram todos os IPs dos containers HTTP na rede httpnet, permitindo verificar se a configuração da distribuição da carga está correta. A imagem acima e a imagem abaixo são uma só, cortada para melhor visualização dos detalhes.
 
 
+
+11. **Testando a Redundância dos Servidores Web**
+
+    **Explicação do que será testado:**
+
+    Após inspecionar as redes ativas no Docker e garantir que a configuração está correta, é fundamental testar a redundância dos servidores web. O objetivo é verificar se o balanceador de carga está distribuindo corretamente as requisições entre os servidores web, assegurando que todos os servidores estejam operacionais e que o tráfego esteja sendo gerenciado de forma eficaz.
+
+    **Passo 1:** Realizando múltiplas requisições para o endereço http://www.primario.com:
+
+    Para testar a redundância e a distribuição de carga, serão feitas três requisições em sequência ao endereço http://www.primario.com. Isso permite observar como o balanceador de carga lida com as requisições e distribui o tráfego entre os servidores web disponíveis.
+    ```bash
+    $ curl http://www.primario.com
+    $ curl http://www.primario.com
+    $ curl http://www.primario.com
+    ```
+
+    <img src="images/imagem212.png">
+
+12. **Testando a Falha de um Servidor Web**
+
+    **Explicação do que será testado:**
+
+    Para assegurar a resiliência e a capacidade de recuperação do balanceador de carga, é crucial testar a falha de um servidor web. O objetivo é verificar se, ao parar um dos servidores web, o balanceador de carga continua a distribuir as requisições apenas entre os servidores restantes, garantindo que o tráfego ainda seja gerenciado de forma eficaz e que o serviço permaneça disponível.
+
+    **Passo 1:** Parando o servidor http-server1:
+
+    Para simular a falha de um servidor web, vamos parar o servidor http-server1. Isso permitirá observar se o balanceador de carga redireciona corretamente o tráfego para os outros servidores web ativos.
+    
+    ```bash
+    $ docker stop http-server1
+    ```
+
+    **Passo 2:** Realizando múltiplas requisições para o endereço http://www.primario.com:
+
+    Após parar o servidor http-server1, serão feitas três requisições em sequência ao endereço http://www.primario.com. Isso permitirá verificar se o balanceador de carga distribui as requisições apenas entre os servidores restantes (http-server2 e http-server3).
+
+    ```bash
+    $ curl http://www.primario.com
+    $ curl http://www.primario.com
+    $ curl http://www.primario.com
+    ```
+    
+
+    **Explicação do que foi testado:**
+
+    Parar o servidor http-server1 e realizar as requisições subsequentes permitirá observar se o balanceador de carga está distribuindo as requisições apenas entre os servidores ativos. A verificação deve confirmar que, mesmo com um servidor web inativo, o balanceador de carga continua a funcionar corretamente, gerenciando o tráfego e mantendo a disponibilidade do serviço.
+
+    Na imagem abaixo, observamos o resultado das requisições após a parada do servidor http-server1. Podemos verificar que o balanceador de carga está distribuindo as requisições apenas entre os dois servidores restantes, demonstrando a capacidade de recuperação e a resiliência do sistema.
+
+    <img src="images/imagem213.png">
+
+    O teste também pode ser feito no navegador, onde mediante voce vai atualizando a página, o load-balancer vai também distribuindo entre os 3 servidores (caso estejam todos ativos), ou seja, as requisições só serão distribuídas entre os servidores web ativos .
+
+    **Servidor 1:**
+
+    <img src="images/imagem214.png">
+
+    **Servidor 2:**
+
+    <img src="images/imagem215.png">
+
+    **Servidor 3:**
+
+    <img src="images/imagem215.png">
+
+
+
 ## Conclusão
 
 O projeto "Servidor DNS e Balanceamento de Carga com Docker" foi desenvolvido com o objetivo de criar uma infraestrutura eficiente utilizando Docker para serviços de DNS e HTTP. O sistema implementado inclui servidores DNS primário e secundário, servidores HTTP e um balanceador de carga, com o balanceamento de carga configurado para distribuir requisições de forma eficiente entre os servidores HTTP.
