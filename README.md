@@ -250,10 +250,6 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     ```bash
     $ docker stop dns-primario
     ```
-    Acessando o container do dns-secundario e solicitando a resolução de nome:
-    ```bash
-    $ docker exec -it dns-secundario /bin/bash
-    ```
     Comando para verificar o estado dos containers:
     ```bash
     $ docker-compose ps -a
