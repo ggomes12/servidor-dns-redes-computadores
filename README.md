@@ -212,38 +212,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
 
 
-4. **Verificando o servidor HTTP**
-
-    **Explicação do que será testado:**
-    
-    Para garantir que os servidores HTTP estão funcionando corretamente, acessamos cada container dos servidores HTTP (http-server1, http-server2 e http-server3) e utilizamos o comando curl para verificar o conteúdo servido por cada servidor.
-
-    Comandos para acessar os containers dos servidores HTTP e realizar a verificação:
-
-    **Para o http-server1:**
-    ```bash
-    $ docker exec -it http-server1 /bin/bash
-    ```
-    <img src="images/imagem9.png">
-
-    **Para o http-server2:**
-    ```bash
-    $ docker exec -it http-server2 /bin/bash
-    ```
-    <img src="images/imagem10.png">
-
-
-    **Para o http-server3:**
-    ```bash
-    $ docker exec -it http-server3 /bin/bash
-    ```
-    <img src="images/imagem11.png">
-
-    **Explicação do que foi testado:**
-
-    Os comandos docker exec -it http-server1 /bin/bash, docker exec -it http-server2 /bin/bash e docker exec -it http-server3 /bin/bash permitem acessar os terminais interativos dos containers dos servidores HTTP1, HTTP2 e HTTP3, respectivamente. Dentro de cada container, o comando "curl http: // localhost" é utilizado para enviar uma solicitação HTTP ao próprio servidor. Isso retorna o conteúdo da página index.html, confirmando que cada servidor HTTP está configurado corretamente e está servindo o conteúdo esperado. Este teste é realizado no terminal Linux e verifica se a configuração de cada servidor HTTP está funcionando como esperado.
-
-5. **Verificando a conectividade entre os servidores HTTP**
+4. **Verificando a conectividade entre os servidores HTTP**
     **Explicação do que será testado:**
 
     Para garantir que os servidores HTTP podem se comunicar entre si, acessamos o container do http-server1 e utilizamos o comando ping para verificar a conectividade com os outros dois servidores HTTP (http-server2 e http-server3).
@@ -266,20 +235,6 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     
     Após acessar o container do http-server1, utilizamos o comando ping para verificar a conectividade entre os servidores HTTP (http-server2 e http-server3). Isso confirma que os servidores HTTP podem se comunicar entre si, garantindo a funcionalidade correta da rede configurada pelo Docker Compose.
 
-6. **Verificando a conectividade com o load balancer**
-
-    **Explicação do que será testado:**
-
-    Além de verificar a conectividade entre os servidores HTTP, também é importante garantir que os servidores HTTP possam se comunicar com o load balancer. Ainda dentro do acesso do container do http-server1 utilizamos o comando ping para verificar a conectividade com o load balancer.
-
-    ```bash
-    $ ping load-balancer
-    ```
-    <img src="images/imagem13.png">
-
-    **Explicação do que foi testado:**
-
-    Utilizamos o comando ping dentro do container do http-server1 para verificar a conectividade com o load balancer. O load balancer é responsável por distribuir o tráfego de rede de forma equilibrada entre os servidores HTTP, garantindo que nenhuma única máquina fique sobrecarregada. Isso confirma que o servidor HTTP pode se comunicar com o load balancer, garantindo a funcionalidade correta da rede configurada pelo Docker Compose.
 
 7. **Verificando a conectividade entre os servidores DNS**
 
@@ -315,25 +270,6 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     Utilizamos o comando ping dentro do container do dns-primario para verificar a conectividade com o dns-secundario. Isso confirma que o servidor DNS primário pode se comunicar com o servidor DNS secundário, garantindo a funcionalidade correta da rede configurada pelo Docker Compose.
 
-8. **Solicitando transferência de zona do DNS secundário**
-
-    **Explicação do que será testado:**
-
-    Para garantir que o servidor DNS secundário (dns-secundario) está corretamente configurado para replicar os dados do servidor DNS primário (dns-primario), acessamos o container dns-secundario e solicitamos manualmente uma transferência de zona. Esse teste verifica se todos os registros da zona primario.com são transferidos corretamente para o servidor secundário.
-
-    Comando para acessar o container do dns-secundario e solicitar a transferência de zona:
-     ```bash
-    $ docker exec -it dns-secundario /bin/bash
-    ```
-    Dentro do terminal do container dns-secundario:
-     ```bash
-    $ dig @dns-primario primario.com AXFR
-    ```
-    **Explicação do que foi testado:**
-
-    Utilizamos o comando dig @dns-primario primario.com AXFR dentro do container dns-secundario para solicitar uma transferência de zona do servidor DNS primário. A transferência de zona (AXFR) é um processo pelo qual todos os registros de uma zona DNS são copiados do servidor primário para o servidor secundário. O comando retorna todos os registros da zona primario.com, demonstrando que o servidor DNS secundário é uma cópia exata do servidor primário. Isso confirma que a replicação dos dados DNS entre os servidores está funcionando corretamente.
-
-    <img src="images/imagem16.png">
 
 9. **Testando a falha do servidor DNS primário**
 
@@ -363,7 +299,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     ```bash
     $ dig primario.com
     ```
-    <img src="images/imagem18.png">
+    <img src="images/imagem188.png">
 
     **Explicação do que foi testado:**
 
@@ -379,7 +315,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     ```bash
     $ docker network ls
     ```
-    <img src="images/imagem19.png">
+    <img src="images/imagem199.png">
 
     **Passo 2:** Inspecionando a rede httpnet:
 
@@ -387,9 +323,9 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     ```bash
     $ docker network inspect httpnet
     ```
-    <img src="images/imagem20.png">
+    <img src="images/imagem200.png">
 
-    <img src="images/imagem21.png">
+    <img src="images/imagem211.png">
 
     **Explicação do que foi testado:**
 
