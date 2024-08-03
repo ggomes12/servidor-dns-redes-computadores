@@ -383,7 +383,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     <img src="images/imagem213.png">
 
-    O teste também pode ser feito no navegador, onde mediante voce vai atualizando a página, o load-balancer vai também distribuindo entre os 3 servidores (caso estejam todos ativos), ou seja, as requisições só serão distribuídas entre os servidores web ativos .
+    O teste também pode ser feito no navegador, onde mediante voce vai atualizando a página, o load-balancer vai também distribuindo entre os 3 servidores (caso estejam todos ativos), ou seja, as requisições só serão distribuídas entre os servidores web ativos.
 
     **Servidor 1:**
 
