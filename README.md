@@ -29,16 +29,19 @@ O projeto está organizado da seguinte forma:
 Diretório `dns`
 
     Dockerfile: Define a imagem Docker para o servidor DNS.
-    named.conf: Configuração principal do BIND9.
-    db.: Arquivo de zona para o domínio ....
-    db.: Arquivo de zona para o domínio backup.
-    db.: Arquivo de zona reversa.
+    named.conf: Configuração principal do BIND9 (Includes e controls)
+    db.primario.com: Arquivo de zona para o domínio principal (dns-primário)
+    named.conf.local.primario: Configuração de zona master (primária)
+    named.conf.local.secundária: Configuração de zona slave (secundária)
+    named.conf.options: Configuração de opções.
+    rndc.key: Chave para acesso remoto rndc.
+    
+Diretórios `http1`, `http2` e `http3` 
 
-Diretório `http`
-
-    Dockerfile: Define a imagem Docker para os servidores HTTP.
-    index.html: Página inicial para os servidores HTTP.
+    Dockerfile.http: Define a imagem Docker para os servidores HTTP.
+    index.html: Página estática html para os servidores HTTP.
     nginx.conf: Configuração do Nginx.
+    resolv.conf: Configuração de ip (nameserver).
 
 Diretório `load_balancer`
 
@@ -47,7 +50,7 @@ Diretório `load_balancer`
 
 Arquivo `docker-compose.yml`
 
-    Define os serviços Docker e como eles interagem entre si.
+    Define a orquestração dos serviços nos containers Docker e como eles interagem entre si.
 
 ## Pré-requisitos
 
@@ -68,40 +71,46 @@ Arquivo `docker-compose.yml`
     $ cd servidor-dns-redes-computadores
     ```
 
-3. **Suba os containers:**
+3. **Build os containers:**
 
     ```bash
-    $ docker-compose up 
+    $ docker-compose build --no-cache
+    ```
+    
+4. **Suba os containers:**
+
+    ```bash
+    $ docker-compose up -d
     ```
 
-4. **Verifique os logs:**
+5. **Verifique os logs:**
 
     - No Windows:
       ```bash
-      $ docker-compose logs
+      $ docker-compose logs <nome-container>
       ```
 
     - No MacOS/Linux:
       ```bash
-      $ docker-compose logs
+      $ docker-compose logs <nome-container>
       ```
 
-5. **Acesse o sistema:**
+6. **Acesse o sistema:**
 
     ```bash
-    $ curl http://localhost
+    $ curl http//:www.primario.com
     ```
 
-6. **Testar o DNS:**
+7. **Testar o DNS:**
 
     ```bash
-    $ dig @localhost exemplo.com
+    $ dig @<nome-container> www.primario.com
     ```
 
-7. **Verificar balanceamento de carga:**
+8. **Verificar balanceamento de carga:**
 
     ```bash
-    $ curl http://localhost/balanceamento
+    $ curl http://www.primario.com
     ```
 
 ## Exemplos de teste na criação e orquestração dos containers docker
@@ -124,7 +133,7 @@ Arquivo `docker-compose.yml`
 
     **Explicação do que foi testado:**
 
-    O comando docker-compose build --no-cache lê o docker-compose.yml e, em seguida, constrói as imagens Docker conforme especificado nos respectivos Dockerfiles. Este comando prepara todas as imagens necessárias para serem executadas como containers, garantindo que todas as dependências sejam baixadas e configuradas corretamente sem utilizar cache.
+    O comando docker-compose build --no-cache lê o docker-compose.yml e, em seguida, constrói as imagens Docker conforme especificado nos respectivos Dockerfiles. Este comando prepara todas as imagens necessárias para serem executadas como containers, garantindo que todas as dependências sejam baixadas e configuradas corretamente sem utilizar cache já salvo anteriormente, caso você já tenha executado alguma vez.
 
 2. **Upando os containers**
 
@@ -153,19 +162,14 @@ Arquivo `docker-compose.yml`
     **Comando para verificar os container:**
 
     ```bash
-    $ docker-compose ps
+    $ docker-compose ps -a
 
     ```
-    <img src="images/imagem3.png">
-    
-    imagens para melhor visualização:
-
     <img src="images/imagem4.png">
-    <img src="images/imagem5.png">
 
     **Explicação do que foi testado:**
 
-    O comando docker-compose ps lista todos os containers definidos no docker-compose.yml que estão em execução, juntamente com seus status, portas expostas e comandos de inicialização. Isso confirma que todos os serviços foram iniciados corretamente e estão prontos para uso.
+    O comando docker-compose ps lista todos os containers definidos no docker-compose.yml que estão em execução, juntamente com seus status, portas expostas e comandos de inicialização. Isso confirma que todos os serviços foram iniciados corretamente e estão prontos para uso. Utilizando a flag -a, será mostrado também os containers que estão com status em exit(1), isso é importante para verificarmos os que executaram e os que não executaram.
 
 Os containers acima já estão funcionando. A partir do próximo tópico, será mostrado os testes de cada um deles.
 
@@ -208,7 +212,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     
     **Explicação do que foi testado:**
 
-    O comando docker exec -it dns-secundario /bin/bash permite acessar o terminal interativo do container do servidor DNS secundário. Dentro desse container, o comando dig @localhost primario.com é utilizado para testar a resolução de nomes, consultando o servidor DNS primário para verificar se o domínio primario.com é resolvido corretamente. Esse teste confirma que o servidor DNS secundário pode se comunicar com o primário e resolver nomes de domínio conforme esperado.
+    O comando docker exec -it dns-secundario /bin/bash permite acessar o terminal interativo do container do servidor DNS secundário. Dentro desse container, o comando dig @localhost www.primario.com é utilizado para testar a resolução de nomes, consultando o servidor DNS primário para verificar se o domínio primario.com é resolvido corretamente. Esse teste confirma que o servidor DNS secundário pode se comunicar com o primário e resolver nomes de domínio conforme esperado.
 
 
 
@@ -236,42 +240,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     Após acessar o container do http-server1, utilizamos o comando ping para verificar a conectividade entre os servidores HTTP (http-server2 e http-server3). Isso confirma que os servidores HTTP podem se comunicar entre si, garantindo a funcionalidade correta da rede configurada pelo Docker Compose.
 
 
-7. **Verificando a conectividade entre os servidores DNS**
-
-    **Explicação do que será testado:**
-
-    Para garantir que os servidores DNS podem se comunicar entre si, acessamos os containers dns-secundario e dns-primario e utilizamos o comando ping para verificar a conectividade entre eles.
-
-    **Primeiro teste**: Acessando o container do dns-secundario e pingando o dns-primario:
-    ```bash
-    $ docker exec -it dns-secundario /bin/bash
-    ```
-    Dentro do terminal do container dns-secundario:
-    ```bash
-    $ ping dns-primario
-    ```
-    <img src="images/imagem14.png">
-
-    **Explicação do que foi testado:**
-
-    Utilizamos o comando ping dentro do container do dns-secundario para verificar a conectividade com o dns-primario. Isso confirma que o servidor DNS secundário pode se comunicar com o servidor DNS primário, garantindo a funcionalidade correta da rede configurada pelo Docker Compose.
-
-    **Segundo teste:** Acessando o container do dns-primario e pingando o dns-secundario:
-    ```bash
-    $ docker exec -it dns-primario /bin/bash
-    ```
-    Dentro do terminal do container dns-primario:
-    ```bash
-    $ ping dns-secundario
-    ```
-    <img src="images/imagem15.png">
-
-    **Explicação do que foi testado:**
-
-    Utilizamos o comando ping dentro do container do dns-primario para verificar a conectividade com o dns-secundario. Isso confirma que o servidor DNS primário pode se comunicar com o servidor DNS secundário, garantindo a funcionalidade correta da rede configurada pelo Docker Compose.
-
-
-9. **Testando a falha do servidor DNS primário**
+5. **Testando a falha do servidor DNS primário**
 
     **Explicação do que será testado:**
 
@@ -297,7 +266,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
     ```
     Dentro do terminal do container dns-secundario:
     ```bash
-    $ dig primario.com
+    $ dig @localhost www.primario.com
     ```
     <img src="images/imagem188.png">
 
@@ -305,7 +274,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     Após parar o container do dns-primario, utilizamos o comando docker-compose ps -a para verificar que o container do dns-primario está parado e que os outros containers estão em execução. Em seguida, acessamos o container do dns-secundario e utilizamos o comando dig primario.com para solicitar a resolução do nome primario.com. O comando retornou a resposta correta, demonstrando que o servidor DNS secundário está atuando corretamente no lugar do servidor primário em caso de falha. Isso confirma que o servidor DNS secundário está configurado para continuar fornecendo resolução de nomes mesmo na ausência do servidor primário.
 
-10. **Inspecionando as redes ativas no Docker**
+6. **Inspecionando as redes ativas no Docker**
 
     **Explicação do que será testado:**
 
@@ -333,7 +302,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
 
 
-11. **Testando a Redundância dos Servidores Web**
+7. **Testando a Redundância dos Servidores Web**
 
     **Explicação do que será testado:**
 
@@ -350,7 +319,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     <img src="images/imagem212.png">
 
-12. **Testando a Falha de um Servidor Web**
+8. **Testando a Falha de um Servidor Web**
 
     **Explicação do que será testado:**
 
@@ -383,7 +352,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     <img src="images/imagem213.png">
 
-    O teste também pode ser feito no navegador, onde mediante voce vai atualizando a página, o load-balancer vai também distribuindo entre os 3 servidores (caso estejam todos ativos), ou seja, as requisições só serão distribuídas entre os servidores web ativos.
+    O teste também pode ser feito no navegador, onde mediante vôce vai atualizando a página, o load-balancer vai também distribuindo entre os 3 servidores (caso estejam todos ativos), ou seja, as requisições só serão distribuídas entre os servidores web ativos.
 
     **Servidor 1:**
 
@@ -395,7 +364,7 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     **Servidor 3:**
 
-    <img src="images/imagem215.png">
+    <img src="images/imagem216.png">
 
 
 
@@ -412,18 +381,20 @@ O projeto "Servidor DNS e Balanceamento de Carga com Docker" foi desenvolvido co
 2. **Serviços HTTP:**
 
     Configuração de múltiplos servidores HTTP com conteúdo estático, garantindo que os serviços estejam disponíveis e funcionem conforme esperado.
+   
     Balanceamento de Carga:
-
     Implementação de um balanceador de carga usando HAProxy para distribuir requisições entre os servidores HTTP de forma eficiente, utilizando o método Round Robin.
+   
     Orquestração com Docker:
-
     Utilização do Docker e Docker Compose para criar e gerenciar containers, simplificando o processo de deploy e garantindo a escalabilidade da infraestrutura.
 
-3. **Resultados dos Testes:**
+4. **Resultados dos Testes:**
 
-    Serviço DNS: A comunicação e resolução de nomes entre os servidores DNS foram validadas com sucesso. O servidor DNS secundário demonstrou capacidade de assumir a função do primário em caso de falha.
+    Serviço DNS:
+   A comunicação e resolução de nomes entre os servidores DNS foram validadas com sucesso. O servidor DNS secundário demonstrou capacidade de assumir a função do primário em caso de falha.
 
-    Serviços HTTP: Todos os servidores HTTP responderam corretamente às requisições, e a conectividade entre eles foi confirmada.
+    Serviços HTTP:
+   Todos os servidores HTTP responderam corretamente às requisições, e a conectividade entre eles foi confirmada.
 
     Balanceamento de Carga: O balanceador de carga distribuiu as requisições entre os servidores HTTP conforme esperado, e os logs confirmaram que o método Round Robin está funcionando corretamente.
 
@@ -436,6 +407,3 @@ Este projeto demonstra a eficácia do Docker para gerenciar e orquestrar serviç
     Erik Lustosa
     Guilherme Gomes
 
-## Licença
-
-Este projeto é licenciado sob a Licença MIT - veja o arquivo LICENSE para mais detalhes.
