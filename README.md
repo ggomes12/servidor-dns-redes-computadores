@@ -331,54 +331,6 @@ Os containers acima já estão funcionando. A partir do próximo tópico, será 
 
     O comando docker network ls lista todas as redes ativas no Docker, permitindo confirmar que as redes necessárias estão disponíveis e funcionando. Em seguida, o comando docker network inspect httpnet fornece detalhes específicos sobre a rede httpnet, incluindo todos os IPs dos containers HTTP conectados a essa rede. A visualização desta rede é crucial para testar o balanceamento de carga, pois mostra quais servidores HTTP estão disponíveis e conectados. As imagens mostram todos os IPs dos containers HTTP na rede httpnet, permitindo verificar se a configuração da distribuição da carga está correta. A imagem acima e a imagem abaixo são uma só, cortada para melhor visualização dos detalhes.
 
-11. **Testando o Balanceamento de Carga com Requisições ao Load-Balancer**
-
-    **Explicação do que será testado:**
-
-    Para verificar se o balanceamento de carga está funcionando corretamente, fizemos uma série de requisições ao IP do load-balancer. Utilizamos um loop para enviar 20 requisições curl para o IP do load-balancer (172.18.0.2) e registramos o IP do servidor que respondeu a cada requisição. Isso ajuda a verificar se o balanceamento de carga está distribuindo as solicitações entre os servidores HTTP de forma adequada.
-
-    Passo 1: Escrevendo o script para testar o balanceamento de carga
-    ```bash
-    for i in {1..20}
-    do
-    curl -s http://172.18.0.2
-    echo "Resposta do servidor $(hostname)"
-    done
-    ```
-    <img src="images/imagem22.png">
-
-    **Explicação do que foi testado:**
-
-    O script for utiliza o comando curl para enviar 20 requisições ao IP do load-balancer. A opção -s faz com que o curl opere em modo silencioso, sem exibir o progresso da transferência. Após cada requisição, o IP do servidor que respondeu é impresso na tela usando hostname. Esse método permite verificar se o load-balancer está distribuindo as requisições entre os servidores HTTP. A imagem mostra o script e a saída das requisições, evidenciando quais servidores responderam e a quantidade de respostas, ajudando a validar o funcionamento do balanceamento de carga.
-
-12. **Verificando o Balanceamento de Carga nos Logs do Load-Balancer**
-
-    **Explicação do que será testado:**
-
-    Para confirmar que o balanceamento de carga está funcionando corretamente, verificamos os logs do load-balancer. O objetivo é verificar se as requisições estão sendo distribuídas entre os servidores HTTP (http-server1, http-server2, e http-server3) conforme esperado. Utilizamos o método de balanceamento de carga Round Robin, que distribui as requisições de forma sequencial entre os servidores disponíveis.
-
-    ```bash
-    $ docker logs load-balancer
-    ```
-    <img src="images/imagem23.png">
-
-    **Explicação do que foi testado:**
-
-    Os logs do load-balancer mostram a distribuição das requisições entre os servidores HTTP. No exemplo, você pode observar as seguintes entradas nos logs:
-
-    http_front http_back/http_server1
-    
-    http_front http_back/http_server2
-    
-    http_front http_back/http_server3
-    
-    http_front http_back/http_server1
-    
-    http_front http_back/http_server2
-    
-    http_front http_back/http_server3
-
-    Essas entradas indicam que o load-balancer está distribuindo as requisições de forma sequencial entre os servidores HTTP, utilizando o método Round Robin. O log confirma que cada servidor (http-server1, http-server2, e http-server3) recebeu uma parte das requisições, como esperado. Este comportamento demonstra que o balanceamento de carga está funcionando corretamente, equilibrando as solicitações entre os servidores disponíveis.
 
 ## Conclusão
 
